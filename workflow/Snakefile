@@ -1,0 +1,24 @@
+include: "rules/common.smk"
+
+if lookup(dpath="load_fair_genome_indexer", within=config):
+    include: "rules/load_fair_genome_indexer.smk"
+
+if lookup(dpath="load_fair_bowtie2_mapping", within=config):
+    include: "rules/load_fair_bowtie2_mapping.smk"
+
+if lookup(dpath="load_fair_fastqc_multiqc", within=config):
+    include: "rules/load_fair_fastqc_multiqc.smk"
+
+include: "rules/bcftools.smk"
+include: "rules/gatk_mutect2_meta_wrapper.smk"
+include: "rules/multiqc.smk"
+
+rule fair_gatk_mutect2_somatic_target:
+    input:
+        unpack(get_fair_gatk_mutect2_somatic_targets),
+    output:
+        touch("tmp/targets/gatk_mutect_somatic_targets.txt"),
+    log:
+        "logs/gatk_mutect_somatic_targets.log",
+    benchmark:
+        "benchmark/gatk_mutect_somatic_targets.tsv"
